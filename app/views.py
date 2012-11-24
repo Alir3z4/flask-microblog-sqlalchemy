@@ -6,8 +6,25 @@ from forms import LoginForm
 
 @app.route('/')
 @app.route('/index')
+@login_required
 def index():
-    return 'Hello, World!'
+    user = g.user
+    posts = [
+        {
+            'author': { 'nickname': 'John' },
+            'body': 'Beautiful day in Portland!'
+        },
+        {
+            'author': { 'nickname': 'Susan' },
+            'body': 'The Avengers movie was so cool!'
+        }
+    ]
+    return render_template(
+        'index.html',
+        title='Home',
+        user=user,
+        posts=posts
+    )
 
 @app.route('/login', methods = ['GET', 'POST'])
 @oid.loginhandler
