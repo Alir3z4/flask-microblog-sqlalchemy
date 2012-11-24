@@ -42,6 +42,11 @@ def login():
         providers = app.config['OPENID_PROVIDERS']
     )
 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
