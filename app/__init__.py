@@ -1,5 +1,4 @@
 import logging
-import flask.logging
 import os
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
