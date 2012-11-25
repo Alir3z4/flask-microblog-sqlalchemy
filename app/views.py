@@ -64,6 +64,42 @@ def edit():
         form = form
     )
 
+@app.route('/follow/<nickname>')
+def follow(nickname):
+    user = User.query.filter_by(nickname=nickname).first()
+    if user is None:
+        flash("User %s not found." % nickname)
+        return redirect(url_for('index'))
+    if user == g.user:
+        flash("You can't follow yourself!")
+        return redirect(url_for('user', nickname=nickname))
+    u = g.user.follow(user)
+    if u is None:
+        flash('Cannot follow % .' % nickname)
+        return redirect(url_for('user', nickname=nickname))
+    db.session.add(u)
+    db.session.commit()
+    flash('You are now fllowing %s !' % nickname)
+    return redirect(url_for('user', nickname=nickname))
+
+@app.route('/unfollow/<nickname>')
+def unfollow(nickname):
+    user = User.query.filter_by(nickname=nickname).first()
+    if user is None:
+        flash('User %s not found.' % nickname)
+        return redirect(url_for('index'))
+    if user == g.user:
+        flash("You can't unfollow yourself!")
+        redirect(url_for('user', nickname=nickname))
+    u = g.user.unfollow(user)
+    if u is None:
+        flash("Cannot unfollow %s ." % nickname)
+        return redirect(url_for('user', nickname=nickname))
+    db.session.add(u)
+    db.session.commit()
+    flash('You have stopped following %s .' % nickname)
+    return redirect(url_for('user', nickname=nickname))
+
 @app.route('/login', methods=['GET', 'POST'])
 @oid.loginhandler
 def login():
