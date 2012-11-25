@@ -11,25 +11,12 @@ from forms import LoginForm, EditForm, PostForm
 def index():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(
-            body=form.post.data,
-            timestamp=datetime.utcnow(),
-            author=g.user
-        )
+        post = Post(body = form.post.data, timestamp = datetime.utcnow(), author = g.user)
         db.session.add(post)
         db.session.commit()
         flash('Your post is now live!')
         return redirect(url_for('index'))
-    posts = [
-        {
-            'author': { 'nickname': 'John' },
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': { 'nickname': 'Susan' },
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
+    posts = g.user.followed_posts().all()
     return render_template(
         'index.html',
         title='Home',
