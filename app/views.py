@@ -28,16 +28,14 @@ def index(page=1):
 
 
 @app.route('/user/<nickname>')
+@app.route('/user/<nickname>/<int:page>')
 @login_required
-def user(nickname):
+def user(nickname, page=1):
     user = User.query.filter_by(nickname=nickname).first()
     if user is None:
-        flash('User ' + nickname + ' not found.')
+        flash('User %s not found.' % nickname)
         return redirect(url_for('index'))
-    posts = [
-        { 'author': user, 'body': 'Test post #1' },
-        { 'author': user, 'body': 'Test post #2' }
-    ]
+    posts = user.posts.paginate(page, POST_PER_PAGE, False)
     return render_template(
         'user.html',
         user=user,
