@@ -26,3 +26,5 @@ ADMINS = ['me@you.we']
 
 # pagination
 POST_PER_PAGE = 3
+
+WHOOSH_BASE = os.path.join(BASE_DIR, 'search.db')
