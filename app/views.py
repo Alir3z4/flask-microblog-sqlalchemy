@@ -3,12 +3,14 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, lm, oid, db
 from app.models import User, ROLE_USER, ROLE_ADMIN, Post
+from config import POST_PER_PAGE
 from forms import LoginForm, EditForm, PostForm
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
+@app.route('/index/<int:page>', methods=['GET', 'POST'])
 @login_required
-def index():
+def index(page=1):
     form = PostForm()
     if form.validate_on_submit():
         post = Post(body = form.post.data, timestamp = datetime.utcnow(), author = g.user)
@@ -16,7 +18,7 @@ def index():
         db.session.commit()
         flash('Your post is now live!')
         return redirect(url_for('index'))
-    posts = g.user.followed_posts().all()
+    posts = g.user.followed_posts().paginate(1, POST_PER_PAGE, False).items
     return render_template(
         'index.html',
         title='Home',
