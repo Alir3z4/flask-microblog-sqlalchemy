@@ -28,3 +28,4 @@ ADMINS = ['me@you.we']
 POST_PER_PAGE = 3
 
 WHOOSH_BASE = os.path.join(BASE_DIR, 'search.db')
+MAX_SEARCH_RESULTS = 50
